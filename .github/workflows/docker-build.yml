@@ -13,14 +13,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t my-tableau-mcp:latest .
+        run: docker build -t tableau-mcp:latest .
 
       - name: Save Docker image to a tar archive
-        run: docker save -o my-tableau-mcp.tar my-tableau-mcp:latest
+        run: docker save -o tableau-mcp.tar tableau-mcp:latest
 
       - name: Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
           name: tableau-mcp-image
-          path: my-tableau-mcp.tar
+          path: tableau-mcp.tar
           retention-days: 1 # 檔案保留 1 天供下載
