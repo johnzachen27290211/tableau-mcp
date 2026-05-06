@@ -1,31 +1,26 @@
-name: Build and Push MCP to GHCR
+name: Build and Export MCP Image
 
-# 設定為手動觸發
+# 一樣設定為手動觸發
 on:
   workflow_dispatch: 
 
 jobs:
-  build-and-push:
+  build-and-export:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Docker image
+        run: docker build -t my-tableau-mcp:latest .
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+      - name: Save Docker image to a tar archive
+        run: docker save -o my-tableau-mcp.tar my-tableau-mcp:latest
+
+      - name: Upload image as artifact
+        uses: actions/upload-artifact@v4
         with:
-          context: .
-          push: true
-          # 這裡會自動抓取你的 GitHub 帳號並標記為 latest
-          tags: ghcr.io/${{ github.repository_owner }}/tableau-mcp:latest
+          name: tableau-mcp-image
+          path: my-tableau-mcp.tar
+          retention-days: 1 # 檔案保留 1 天供下載
