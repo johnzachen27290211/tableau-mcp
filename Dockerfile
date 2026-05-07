@@ -2,6 +2,9 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
+# Company CA
+COPY company-ca.crt ./company-ca.crt
+
 # Install all dependencies and skip lifecycle scripts
 COPY package.json package-lock.json tsconfig.json ./
 RUN npm ci --ignore-scripts
