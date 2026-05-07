@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        
+      - name: Inject CA
+        run: echo "${{ secrets.FET_CA_CERT }}" > company-ca.crt
 
       - name: Build Docker image
         run: docker build -t tableau-mcp:latest .
